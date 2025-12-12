@@ -1,0 +1,15 @@
+/* src/components/Loader/Loader.module.css */
+.loader {
+  border: 6px solid #f3f3f3; /* світло-сірий фон */
+  border-top: 6px solid #0a66c2; /* синя "спінінг" частина */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 40px auto; /* центрування */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

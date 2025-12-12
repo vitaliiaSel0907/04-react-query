@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/components/App/App.tsx
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import ReactPaginate from "react-paginate";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { getMovies } from "../../services/api";
+import type { MoviesResponse } from "../../types/movie";
+
+import MoviesList from "../MovieList/MovieList";
+import SearchBar from "../SearchBar/SearchBar";
+import Loader from "../Loader/Loader";
+import css from "./App.module.css";
+
+const App: React.FC = () => {
+ 
+ const [query, setQuery] = useState("");
+ const [page, setPage] = useState(1);
+
+  const { data, isLoading, error } = useQuery<MoviesResponse>({
+    queryKey: ["movies", query, page],
+    queryFn: () => getMovies(query, page),
+    enabled: query.length > 0, 
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      {/* Поле пошуку */}
+      <SearchBar
+        onSubmit={(searchQuery) => {
+          setQuery(searchQuery);
+          setPage(1);            
+        }}
+      />
 
-export default App
+      {}
+      {isLoading && <Loader />}
+
+      {/* Повідомлення про помилку */}
+      {error && <p>Error loading movies.</p>}
+
+      {}
+     {data?.results?.length ? <MoviesList movies={data.results} /> : null}
+
+
+
+      {}
+      {data && data.total_pages > 1 && (
+        <ReactPaginate
+          pageCount={data.total_pages}
+          pageRangeDisplayed={5}
+          marginPagesDisplayed={1}
+          onPageChange={({ selected }) => setPage(selected + 1)}
+          forcePage={page - 1}
+          containerClassName={css.pagination}
+          activeClassName={css.active}
+          nextLabel="→"
+          previousLabel="←"
+        />
+      )}
+    </div>
+  );
+};
+
+export default App;
+
+
