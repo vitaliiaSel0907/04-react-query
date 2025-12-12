@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 
-import { getMovies } from "../../services/api";
+import { getMovies } from "../../services/movieService";
 import type { MoviesResponse } from "../../types/movie";
 
 import MoviesList from "../MovieGrid/MovieGrid";
@@ -36,10 +36,9 @@ const App: React.FC = () => {
 
     {isLoading && <Loader />}
 
-/* Помилка запиту */
+
 {error && <ErrorMessage message="Error loading movies." />}
 
-/* Якщо запит пройшов, але фільми не знайдено */
 {!isLoading && !error && data?.results.length === 0 && (
   <ErrorMessage message="No movies found for this query." />
 )}
