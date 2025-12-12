@@ -1,4 +1,4 @@
-// src/components/App/App.tsx
+
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
@@ -6,10 +6,12 @@ import ReactPaginate from "react-paginate";
 import { getMovies } from "../../services/api";
 import type { MoviesResponse } from "../../types/movie";
 
-import MoviesList from "../MovieList/MovieList";
+import MoviesList from "../MovieGrid/MovieGrid";
 import SearchBar from "../SearchBar/SearchBar";
 import Loader from "../Loader/Loader";
 import css from "./App.module.css";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+
 
 const App: React.FC = () => {
  
@@ -24,7 +26,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      {/* Поле пошуку */}
+      {}
       <SearchBar
         onSubmit={(searchQuery) => {
           setQuery(searchQuery);
@@ -32,11 +34,15 @@ const App: React.FC = () => {
         }}
       />
 
-      {}
-      {isLoading && <Loader />}
+    {isLoading && <Loader />}
 
-      {/* Повідомлення про помилку */}
-      {error && <p>Error loading movies.</p>}
+/* Помилка запиту */
+{error && <ErrorMessage message="Error loading movies." />}
+
+/* Якщо запит пройшов, але фільми не знайдено */
+{!isLoading && !error && data?.results.length === 0 && (
+  <ErrorMessage message="No movies found for this query." />
+)}
 
       {}
      {data?.results?.length ? <MoviesList movies={data.results} /> : null}
