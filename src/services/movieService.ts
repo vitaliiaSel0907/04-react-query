@@ -9,7 +9,6 @@ export interface MoviesResponse {
   total_results: number;
 }
 
-// Токен
 const API_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 
 

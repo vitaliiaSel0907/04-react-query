@@ -15,7 +15,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, onSelect }) => {
         <MovieCard
           key={movie.id}
           movie={movie}
-          onSelect={() => onSelect(movie)}
+          onClick={() => onSelect(movie)} 
         />
       ))}
     </div>
