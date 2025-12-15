@@ -3,16 +3,23 @@ import type { Movie } from "../../types/movie";
 import MovieModal from "../MovieModal/MovieModal"; 
 import css from "./MovieCard.module.css";
 
-interface Props {
+interface MovieCardProps {
   movie: Movie;
+  onClick?: () => void; // <- обов’язково
 }
 
-const MovieCard: React.FC<Props> = ({ movie }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <div className={css.movieCard} onClick={() => setIsOpen(true)}>
+      <div
+        className={css.movieCard}
+        onClick={() => {
+          setIsOpen(true);
+          onClick?.(); // виклик пропа, якщо він є
+        }}
+      >
         {movie.poster_path && (
           <img
             src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
@@ -20,8 +27,6 @@ const MovieCard: React.FC<Props> = ({ movie }) => {
             className={css.image}
           />
         )}
-
-        {}
         <div className={css.description}>
           <h3 className={css.title}>{movie.title}</h3>
           <p className={css.details}>
@@ -30,14 +35,13 @@ const MovieCard: React.FC<Props> = ({ movie }) => {
         </div>
       </div>
 
-      {isOpen && (
-        <MovieModal movie={movie} onClose={() => setIsOpen(false)} />
-      )}
+      {isOpen && <MovieModal movie={movie} onClose={() => setIsOpen(false)} />}
     </>
   );
 };
 
 export default MovieCard;
+
 
 
 

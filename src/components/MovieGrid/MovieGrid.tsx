@@ -3,18 +3,23 @@ import type { Movie } from "../../types/movie";
 import MovieCard from "../MovieCard/MovieCard";
 import css from "./MovieGrid.module.css";
 
-interface Props {
+interface MovieGridProps {
   movies: Movie[];
+  onSelect: (movie: Movie) => void;
 }
 
-const MoviesList: React.FC<Props> = ({ movies }) => {
+const MovieGrid: React.FC<MovieGridProps> = ({ movies, onSelect }) => {
   return (
-    <div className={css.moviesList}>
+    <div className={css.moviesGrid}>
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+        <MovieCard
+          key={movie.id}
+          movie={movie}
+          onSelect={() => onSelect(movie)}
+        />
       ))}
     </div>
   );
 };
 
-export default MoviesList;
+export default MovieGrid;
