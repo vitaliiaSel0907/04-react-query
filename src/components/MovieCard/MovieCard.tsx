@@ -5,7 +5,7 @@ import css from "./MovieCard.module.css";
 
 interface MovieCardProps {
   movie: Movie;
-  onClick?: () => void; // <- обов’язково
+  onClick?: () => void;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
@@ -17,7 +17,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
         className={css.movieCard}
         onClick={() => {
           setIsOpen(true);
-          onClick?.(); // виклик пропа, якщо він є
+          onClick?.(); 
         }}
       >
         {movie.poster_path && (
