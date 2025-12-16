@@ -13,6 +13,11 @@ import MovieGrid from "../MovieGrid/MovieGrid";
 import SearchBar from "../SearchBar/SearchBar";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import MovieModal from "../MovieModal/MovieModal";
+
+
+
+
 import css from "./App.module.css";
 
 const App: React.FC = () => {
@@ -20,21 +25,30 @@ const App: React.FC = () => {
   const [page, setPage] = useState(1);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
- const { data, isLoading, isError, isSuccess, isFetching } = useQuery<MoviesResponse, Error>({
+  const {
+  data,
+  isLoading,
+  isError,
+  isSuccess,
+  isFetching,
+} = useQuery<MoviesResponse, Error>({
   queryKey: ["movies", query, page],
   queryFn: () => getMovies(query, page),
-  enabled: query.length > 0,
-  placeholderData: { results: [], page: 1, total_pages: 1, total_results: 0 } as MoviesResponse,
-  // Я намагалася додати keepPreviousData у виклик useQuery для плавної пагінації,
-  //  але у моєму проєкті TypeScript постійно підсвічує його червоним і видає помилки.
+  enabled: query.trim().length > 0,
+  placeholderData: (previousData) => previousData,
 });
 
-useEffect(() => {
-  if (isSuccess && !isFetching && query.length > 0 && data?.results.length === 0) {
-    toast.error("No movies found for this query.");
-  }
-}, [isSuccess, isFetching, data, query]);
 
+  useEffect(() => {
+    if (
+      isSuccess &&
+      !isFetching &&
+      query.length > 0 &&
+      data?.results.length === 0
+    ) {
+      toast.error("No movies found for this query.");
+    }
+  }, [isSuccess, isFetching, data, query]);
 
   return (
     <div>
@@ -50,7 +64,7 @@ useEffect(() => {
       {isLoading && <Loader />}
       {isError && <ErrorMessage message="Error loading movies." />}
 
-      {isSuccess && data?.results.length > 0 && (
+      {isSuccess && data && data.results.length > 0 && (
         <MovieGrid
           movies={data.results}
           onSelect={(movie) => setSelectedMovie(movie)}
@@ -71,11 +85,10 @@ useEffect(() => {
         />
       )}
 
-      {}
       {selectedMovie && (
-        <MovieGrid
-          movies={[selectedMovie]}
-          onSelect={() => setSelectedMovie(null)}
+        <MovieModal
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
         />
       )}
     </div>
@@ -83,4 +96,3 @@ useEffect(() => {
 };
 
 export default App;
-
